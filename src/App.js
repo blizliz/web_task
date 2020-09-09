@@ -71,7 +71,7 @@ const FOOD_AREAS = [{
 		}],
 	}, {
 		id: 'macdac',
-		name: 'McDonald\'s',
+		name: 'McDonal\'s',
 		link: '/place/pizikiva-gallery/macdac',
 		description: 'Сеть ресторанов быстрого питания',
 		image: mcdac,
