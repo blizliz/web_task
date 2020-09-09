@@ -71,7 +71,7 @@ const FOOD_AREAS = [{
 		}],
 	}, {
 		id: 'macdac',
-		name: 'McDonal\'s',
+		name: 'McDonald\'s',
 		link: '/place/pizikiva-gallery/macdac',
 		description: 'Сеть ресторанов быстрого питания',
 		image: mcdac,
@@ -158,7 +158,7 @@ const App = () => {
 					path="/orders"
 					exact
 				>
-					<Orders 
+					<Orders
 						order={order}
 						orderStatuses={orderStatuses}
 						foodAreas={FOOD_AREAS}
@@ -180,7 +180,7 @@ const App = () => {
 						}}
 					/>
 				</Route>
-				<Route 
+				<Route
 					path="/place/:area/:place"
 					render={routeProps => {
 						return (
@@ -218,7 +218,7 @@ const App = () => {
 									}
 
 									const serialized = JSON.stringify(updatedOrder);
-									
+
 									localStorage.setItem('orders', serialized);
 									localStorage.setItem('orderStatuses', JSON.stringify(nextOrderStatuses));
 
@@ -253,7 +253,7 @@ const App = () => {
 									}
 
 									const serialized = JSON.stringify(updatedOrder);
-									
+
 									localStorage.setItem('orders', serialized);
 									localStorage.setItem('orderStatuses', JSON.stringify(nextOrderStatuses));
 
