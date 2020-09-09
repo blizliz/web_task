@@ -103,6 +103,12 @@ const Orders = ({ order, orderStatuses, foodAreas, setFinishedOrder, setActiveOr
               className="Orders__cancel"
               onClick={() => {
                 setFinishedOrder({ itemId: order.shopId });
+                const orderStatuses = JSON.parse((localStorage.getItem('orderStatuses') || 'null')) || {};
+                const nextStatuses = {...orderStatuses};
+
+                nextStatuses[order.shopId] = 'CANCELLED';
+
+                localStorage.setItem('orderStatuses', JSON.stringify(nextStatuses));
               }}
             >
               Отм.
