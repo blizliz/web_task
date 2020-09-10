@@ -8,7 +8,7 @@ import './orders.css';
 const Orders = ({ order, orderStatuses, foodAreas, setFinishedOrder, setActiveOrder }) => {
   const activeOrders = useMemo(() => {
     const activeOrdersList = Object.keys(orderStatuses)
-      .filter(shopId => orderStatuses[shopId] === 'ACTIVE')
+      .filter(shopId => orderStatuses[shopId].status === 'ACTIVE')
       .map(shopId => shopId);
 
     const result = [];
@@ -44,7 +44,7 @@ const Orders = ({ order, orderStatuses, foodAreas, setFinishedOrder, setActiveOr
 
   const finishedOrders = useMemo(() => {
     const activeOrdersList = Object.keys(orderStatuses)
-      .filter(shopId => orderStatuses[shopId] !== 'ACTIVE')
+      .filter(shopId => orderStatuses[shopId].status !== 'ACTIVE')
       .map(shopId => shopId);
 
     const result = [];
@@ -103,6 +103,12 @@ const Orders = ({ order, orderStatuses, foodAreas, setFinishedOrder, setActiveOr
               className="Orders__cancel"
               onClick={() => {
                 setFinishedOrder({ itemId: order.shopId });
+                const orderStatuses = JSON.parse((localStorage.getItem('orderStatuses') || 'null')) || {};
+                const nextStatuses = {...orderStatuses};
+
+                nextStatuses[order.shopId] = {...nextStatuses[order.shopId], status: 'CANCELLED'}
+
+                localStorage.setItem('orderStatuses', JSON.stringify(nextStatuses));
               }}
             >
               Отм.

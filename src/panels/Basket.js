@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import accounting from 'accounting';
 
@@ -8,10 +8,8 @@ import edit from '../img/edit.svg';
 import './place.css';
 
 
-const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order }) => {
-  const [ faster, setFaster ] = useState(true);
-  const [ time, setTime ] = useState('');
-  const [ selfService, setSelfService ] = useState(false);
+const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order, orderStatuses, setDeliveryOptions }) => {
+  const { selfService, time, } = orderStatuses[itemId];
   const area = foodAreas.filter(area => area.id === areaId)[0];
   const item = area.items.filter(item => item.id === itemId)[0];
 
@@ -119,6 +117,7 @@ const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order }) => {
                     }
                   }}
               />
+
             </div>
             <div className="Place__choice-item">
               <span>Назначить</span>
@@ -232,6 +231,69 @@ const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order }) => {
               Вернуться в ресторан
             </h3>
           </Link>
+              <h3
+                className="Place__product-name"
+              >
+                {item.name}
+              </h3>
+              <p
+                className="Place__product-price"
+              >
+                Цена: {item.price}
+              </p>
+              <p
+                className="Place__product-count"
+              >
+                x{count}
+              </p>
+            </li>
+          ))}
+        </ul>
+        <Link
+          className="Place__change-product"
+          to={`/place/${areaId}/${itemId}`}
+        >
+          Изменить
+        </Link>
+      </div>
+      <div className="Place__choice">
+        <h3>Время:</h3>
+        <div className="Place__choice-item">
+          <span>Как можно быстрее</span>
+          <Checkbox 
+            checked={time === 'faster'}
+            onToggle={() => {
+              let newTime;
+
+              if (time === 'faster') {
+                newTime = '';
+              } else {
+                newTime = 'faster'
+              }
+
+              setDeliveryOptions({itemId, time: newTime})
+            }}
+          />
+        </div>
+        <div className="Place__choice-item">
+          <span>Назначить</span>
+          <input type="time"
+            value={time}
+            onFocus={() => {
+              setDeliveryOptions({itemId, time: ''})
+            }}
+            onChange={event => {
+              setDeliveryOptions({itemId, time: event.target.value})
+            }}
+          />
+        </div>
+        <div className="Place__choice-item">
+          <h3>С собой</h3>
+          <Checkbox checked={selfService} onToggle={() => setDeliveryOptions({itemId, selfService: !selfService})} />
+        </div>
+        <div className="Place__choice-item">
+          <h3>На месте</h3>
+          <Checkbox checked={!selfService} onToggle={() => setDeliveryOptions({itemId, selfService: !selfService})} />
         </div>
     );
   }

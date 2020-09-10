@@ -33,7 +33,7 @@ const FOOD_AREAS = [{
 			name: 'Классик',
 			price: 150,
 		}, {
-			id: 'bigmac',
+			id: 'fries',
 			image: OneTowar,
 			name: 'Картофель фри',
 			price: 50,
@@ -141,7 +141,7 @@ const App = () => {
 						setActiveOrder={({ itemId }) => {
 							const nextStatuses = {...orderStatuses};
 
-							nextStatuses[itemId] = 'ACTIVE';
+							nextStatuses[itemId] = {...nextStatuses[itemId], status: 'ACTIVE'}
 
 							setOrderStatuses(nextStatuses);
 							localStorage.setItem('orderStatuses', JSON.stringify(nextStatuses));
@@ -152,20 +152,30 @@ const App = () => {
 					<Basket
 						foodAreas={FOOD_AREAS}
 						order={order}
+						orderStatuses={orderStatuses}
+						setDeliveryOptions={({ itemId, ...update }) => {
+							const nextStatuses = {...orderStatuses};
+
+							nextStatuses[itemId] = {...nextStatuses[itemId], ...update};
+
+							setOrderStatuses(nextStatuses);
+
+							localStorage.setItem('orderStatuses', JSON.stringify(nextStatuses));
+						}}
 					/>
 				</Route>
 				<Route
 					path="/orders"
 					exact
 				>
-					<Orders 
+					<Orders
 						order={order}
 						orderStatuses={orderStatuses}
 						foodAreas={FOOD_AREAS}
 						setFinishedOrder={({ itemId }) => {
 							const nextStatuses = {...orderStatuses};
 
-							nextStatuses[itemId] = 'DONE';
+							nextStatuses[itemId] = {...nextStatuses[itemId], status: 'DONE'}
 
 							setOrderStatuses(nextStatuses);
 							localStorage.setItem('orderStatuses', JSON.stringify(nextStatuses));
@@ -173,14 +183,14 @@ const App = () => {
 						setActiveOrder={({ itemId }) => {
 							const nextStatuses = {...orderStatuses};
 
-							nextStatuses[itemId] = 'ACTIVE';
+							nextStatuses[itemId] = {...nextStatuses[itemId], status: 'ACTIVE'}
 
 							setOrderStatuses(nextStatuses);
 							localStorage.setItem('orderStatuses', JSON.stringify(nextStatuses));
 						}}
 					/>
 				</Route>
-				<Route 
+				<Route
 					path="/place/:area/:place"
 					render={routeProps => {
 						return (
@@ -210,7 +220,7 @@ const App = () => {
 													if (food.id in order) {
 														const status = item.id === itemId ? 'ACTIVE' : 'DONE';
 
-														nextOrderStatuses[item.id] = status;
+														nextOrderStatuses[item.id] = {...nextOrderStatuses[item.id], status}
 													}
 												});
 											});
@@ -218,7 +228,7 @@ const App = () => {
 									}
 
 									const serialized = JSON.stringify(updatedOrder);
-									
+
 									localStorage.setItem('orders', serialized);
 									localStorage.setItem('orderStatuses', JSON.stringify(nextOrderStatuses));
 
@@ -245,7 +255,7 @@ const App = () => {
 													if (food.id in order) {
 														const status = item.id === itemId ? 'ACTIVE' : 'DONE';
 
-														nextOrderStatuses[item.id] = status;
+														nextOrderStatuses[item.id] = {...nextOrderStatuses[item.id], status}
 													}
 												});
 											});
@@ -253,7 +263,7 @@ const App = () => {
 									}
 
 									const serialized = JSON.stringify(updatedOrder);
-									
+
 									localStorage.setItem('orders', serialized);
 									localStorage.setItem('orderStatuses', JSON.stringify(nextOrderStatuses));
 
