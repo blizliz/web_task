@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import accounting from 'accounting';
 
@@ -8,10 +8,8 @@ import edit from '../img/edit.svg';
 import './place.css';
 
 
-const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order }) => {
-  const [ faster, setFaster ] = useState(true);
-  const [ time, setTime ] = useState('');
-  const [ selfService, setSelfService ] = useState(false);
+const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order, orderStatuses, setDeliveryOptions }) => {
+  const { selfService, time, } = orderStatuses[itemId];
   const area = foodAreas.filter(area => area.id === areaId)[0];
   const item = area.items.filter(item => item.id === itemId)[0];
 
@@ -108,14 +106,17 @@ const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order }) => {
         <div className="Place__choice-item">
           <span>Как можно быстрее</span>
           <Checkbox 
-            checked={faster} 
+            checked={time === 'faster'}
             onToggle={() => {
-              if (faster) {
-                setFaster(false);
+              let newTime;
+
+              if (time === 'faster') {
+                newTime = '';
               } else {
-                setTime('');
-                setFaster(true);
+                newTime = 'faster'
               }
+
+              setDeliveryOptions({itemId, time: newTime})
             }}
           />
         </div>
@@ -124,26 +125,20 @@ const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order }) => {
           <input type="time"
             value={time}
             onFocus={() => {
-              setFaster(false);
+              setDeliveryOptions({itemId, time: ''})
             }}
             onChange={event => {
-              setFaster(false);
-              setTime(event.target.value);
-            }}
-            onBlur={() => {
-              if (time) {
-                setFaster(false);
-              }
+              setDeliveryOptions({itemId, time: event.target.value})
             }}
           />
         </div>
         <div className="Place__choice-item">
           <h3>С собой</h3>
-          <Checkbox checked={selfService} onToggle={() => setSelfService(!selfService)} />
+          <Checkbox checked={selfService} onToggle={() => setDeliveryOptions({itemId, selfService: !selfService})} />
         </div>
         <div className="Place__choice-item">
           <h3>На месте</h3>
-          <Checkbox checked={!selfService} onToggle={() => setSelfService(!setSelfService)} />
+          <Checkbox checked={!selfService} onToggle={() => setDeliveryOptions({itemId, selfService: !selfService})} />
         </div>
       </div>
       <footer className="Place__footer">
